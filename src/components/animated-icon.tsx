@@ -1,93 +1,87 @@
 import { Image } from 'expo-image';
-import { useEffect, useState } from 'react';
-import { Dimensions, StyleSheet, View } from 'react-native';
-import Animated, { Easing, Keyframe } from 'react-native-reanimated';
+import { useEffect, useRef } from 'react';
+import { Animated, Dimensions, StyleSheet, View } from 'react-native';
 
 const INITIAL_SCALE_FACTOR = Dimensions.get('screen').height / 90;
 const DURATION = 600;
 
 export function AnimatedSplashOverlay() {
-  const [visible, setVisible] = useState(true);
+  const opacity = useRef(new Animated.Value(1)).current;
+  const scale = useRef(new Animated.Value(INITIAL_SCALE_FACTOR)).current;
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), DURATION + 200);
-    return () => clearTimeout(timer);
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: DURATION,
+        delay: DURATION * 0.2,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: DURATION,
+        delay: DURATION * 0.2,
+        useNativeDriver: true,
+      }),
+    ]).start();
   }, []);
-
-  if (!visible) return null;
 
   return (
     <Animated.View
-      entering={splashKeyframe.duration(DURATION)}
-      style={styles.backgroundSolidColor}
+      pointerEvents="none"
+      style={[
+        styles.backgroundSolidColor,
+        {
+          opacity,
+          transform: [{ scale }],
+        },
+      ]}
     />
   );
 }
 
-const splashKeyframe = new Keyframe({
-  0: {
-    transform: [{ scale: INITIAL_SCALE_FACTOR }],
-    opacity: 1,
-  },
-  20: {
-    opacity: 1,
-  },
-  70: {
-    opacity: 0,
-    easing: Easing.elastic(0.7),
-  },
-  100: {
-    opacity: 0,
-    transform: [{ scale: 1 }],
-    easing: Easing.elastic(0.7),
-  },
-});
-
-const keyframe = new Keyframe({
-  0: {
-    transform: [{ scale: INITIAL_SCALE_FACTOR }],
-  },
-  100: {
-    transform: [{ scale: 1 }],
-    easing: Easing.elastic(0.7),
-  },
-});
-
-const logoKeyframe = new Keyframe({
-  0: {
-    transform: [{ scale: 1.3 }],
-    opacity: 0,
-  },
-  40: {
-    transform: [{ scale: 1.3 }],
-    opacity: 0,
-    easing: Easing.elastic(0.7),
-  },
-  100: {
-    opacity: 1,
-    transform: [{ scale: 1 }],
-    easing: Easing.elastic(0.7),
-  },
-});
-
-const glowKeyframe = new Keyframe({
-  0: {
-    transform: [{ rotateZ: '0deg' }],
-  },
-  100: {
-    transform: [{ rotateZ: '7200deg' }],
-  },
-});
-
 export function AnimatedIcon() {
+  const opacity = useRef(new Animated.Value(0)).current;
+  const scale = useRef(new Animated.Value(1.3)).current;
+
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: DURATION * 0.6,
+        delay: DURATION * 0.4,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: DURATION * 0.6,
+        delay: DURATION * 0.4,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   return (
     <View style={styles.iconContainer}>
-      <Animated.View entering={glowKeyframe.duration(60 * 1000 * 4)} style={styles.glow}>
-        <Image style={styles.glow} source={require('@/assets/images/logo-glow.png')} />
-      </Animated.View>
-
-      <Animated.View entering={keyframe.duration(DURATION)} style={styles.background} />
-      <Animated.View style={styles.imageContainer} entering={logoKeyframe.duration(DURATION)}>
+      <Image style={styles.glow} source={require('@/assets/images/logo-glow.png')} />
+      <Animated.View
+        style={[
+          styles.background,
+          {
+            opacity,
+            transform: [{ scale }],
+          },
+        ]}
+      />
+      <Animated.View
+        style={[
+          styles.imageContainer,
+          {
+            opacity,
+            transform: [{ scale }],
+          },
+        ]}
+      >
         <Image style={styles.image} source={require('@/assets/images/expo-logo.png')} />
       </Animated.View>
     </View>
