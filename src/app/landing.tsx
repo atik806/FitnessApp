@@ -116,6 +116,7 @@ function SignupButton() {
 export default function LandingScreen() {
   const insets = useSafeAreaInsets();
   const resp = useResponsive();
+  const reduceMotion = resp.isSmall;
 
   return (
     <View style={styles.container}>
@@ -124,7 +125,7 @@ export default function LandingScreen() {
         style={StyleSheet.absoluteFill}
       />
 
-      {CIRCLES.map((c, i) => (
+      {!reduceMotion && CIRCLES.slice(0, 1).map((c, i) => (
         <FloatingCircle key={i} {...c} />
       ))}
 
@@ -135,7 +136,7 @@ export default function LandingScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View entering={FadeIn.duration(800)} style={styles.logoSection}>
+        <Animated.View entering={reduceMotion ? undefined : FadeIn.duration(800)} style={styles.logoSection}>
           <View style={styles.logoWrapper}>
             <LinearGradient
               colors={['#22C55E', '#16A34A']}
@@ -152,7 +153,7 @@ export default function LandingScreen() {
 
         <View style={styles.featuresSection}>
           {FEATURES.map((f, i) => (
-            <Animated.View key={f.title} entering={FadeInDown.duration(500).delay(300 + i * 200).springify()}>
+            <Animated.View key={f.title} entering={reduceMotion ? undefined : FadeInDown.duration(500).delay(300 + i * 200).springify()}>
               <Glass intensity="elevated" style={styles.featureCard}>
                 <Text style={styles.featureIcon}>{f.icon}</Text>
                 <View style={styles.featureText}>
@@ -164,7 +165,7 @@ export default function LandingScreen() {
           ))}
         </View>
 
-        <Animated.View entering={BounceIn.duration(600).delay(1000)} style={styles.ctaSection}>
+        <Animated.View entering={reduceMotion ? undefined : BounceIn.duration(600).delay(1000)} style={styles.ctaSection}>
           <SignupButton />
           <Pressable onPress={() => router.push('/auth?mode=login')}>
             <Text style={styles.loginText}>

@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
+import { ErrorBoundary } from '@/components/error-boundary';
 import { Colors } from '@/constants/theme';
 
 export default function RootLayout() {
@@ -10,7 +11,7 @@ export default function RootLayout() {
   const theme = scheme === 'dark' ? Colors.dark : Colors.light;
 
   return (
-    <>
+    <ErrorBoundary>
       <AnimatedSplashOverlay />
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack
@@ -33,6 +34,6 @@ export default function RootLayout() {
           }}
         />
       </Stack>
-    </>
+    </ErrorBoundary>
   );
 }
