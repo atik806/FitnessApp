@@ -3,7 +3,7 @@
     "name": "FitnessApp",
     "slug": "FitnessApp",
     "owner": "atik21",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "fitnessapp",
